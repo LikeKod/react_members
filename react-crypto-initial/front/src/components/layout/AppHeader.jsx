@@ -1,6 +1,7 @@
 import { Button, Drawer, Layout, Modal, Select, Space } from "antd";
 import { useEffect, useState } from "react";
 import { useCrypto } from "../../context/crypto-context";
+import { useAuth } from "../../providers/useAuth";
 import AddAssetForm from "../AddAssetForm";
 import CoinInfoModal from "../CoinInfoModal";
 
@@ -15,6 +16,8 @@ const headerStyle = {
 };
 
 export default function AppHeader() {
+  const { logoutUser } = useAuth();
+
   const [select, setSelect] = useState(false);
   const [coin, setCoin] = useState(null);
   const [modal, setModal] = useState(false);
@@ -65,13 +68,14 @@ export default function AppHeader() {
         )}
       />
       <Button type="primary" onClick={() => setDrawer(true)}>Add asset</Button>
+      <Button type="primary" onClick={() => logoutUser()}>Log out</Button>
 
       <Modal open={modal} onCancel={() => setModal(false)} footer={null}>
         <CoinInfoModal coin={coin} />
       </Modal>
 
       <Drawer destroyOnClose width={600} title="Add Asset" onClose={() => setDrawer(false)} open={drawer}>
-            <AddAssetForm onClose={() => setDrawer(false)} />
+            <AddAssetForm onClose={setDrawer} />
       </Drawer>
     </Layout.Header>
   );

@@ -21,6 +21,7 @@ export function CryptoContextProvider({ children }) {
         growPercent: percentDifference(asset.price, coin.price),
         totalAmount: asset.amount * coin.price,
         totalProfit: asset.amount * coin.price - asset.amount * asset.price,
+        shortName: asset.shortName,
         name: coin.name,
         ...asset,
       };
@@ -46,7 +47,7 @@ export function CryptoContextProvider({ children }) {
   }
 
   return (
-    <CryptoContext.Provider value={{ loading, crypto, assets, addAsset }}>
+    <CryptoContext.Provider value={{ loading, setAssets, crypto, assets, addAsset }}>
       {" "}
       {children}
     </CryptoContext.Provider>

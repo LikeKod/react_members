@@ -3,6 +3,7 @@ import { Card, Layout, List, Statistic, Tag, Typography } from "antd";
 import { useContext } from "react";
 import CryptoContext from "../../context/crypto-context";
 import { capitalize } from "../../utils";
+import CheckboxElem from "../Checkbox";
 
 const siderStyle = {
   padding: "1rem",
@@ -14,6 +15,7 @@ export default function AppSider() {
   
   return (
     <Layout.Sider width="25%" style={siderStyle}>
+      <CheckboxElem />
       {assets.map((asset) => (
         <Card key={asset.id} style={{ marginBottom: "1rem" }}>
           <Statistic
