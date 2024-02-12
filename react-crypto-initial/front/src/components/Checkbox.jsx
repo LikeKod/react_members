@@ -4,10 +4,13 @@ import CryptoContext from "../context/crypto-context";
 
 export default function CheckboxElem() {
   const { assets, setAssets } = useContext(CryptoContext);
+  const {filters, setFilters} = useContext(CryptoContext)
 
   const onChange = (checkedValues) => {
     console.log("checked = ", checkedValues);
-
+    
+    setFilters(checkedValues)
+    console.log("Filters = ", checkedValues);
    
   };
 

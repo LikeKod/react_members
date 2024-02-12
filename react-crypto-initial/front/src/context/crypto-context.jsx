@@ -12,6 +12,7 @@ export function CryptoContextProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [crypto, setCrypto] = useState([]);
   const [assets, setAssets] = useState([]);
+  const [filters, setFilters] = useState([])
 
   function mapAssets(assets, result) {
     return assets.map((asset) => {
@@ -47,7 +48,7 @@ export function CryptoContextProvider({ children }) {
   }
 
   return (
-    <CryptoContext.Provider value={{ loading, setAssets, crypto, assets, addAsset }}>
+    <CryptoContext.Provider value={{ loading, filters, setFilters, setAssets, crypto, assets, addAsset }}>
       {" "}
       {children}
     </CryptoContext.Provider>
