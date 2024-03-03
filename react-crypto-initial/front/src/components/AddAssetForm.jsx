@@ -75,7 +75,7 @@ export default function AddAssetForm(onClose) {
       id: coin.id,
       amount: values.amount,
       price: values.price,
-      date: values.date.$d ?? new Date()
+      // date: values.date.$d ?? new Date()
     }
     assetRef.current = newAsset
     setSubmitted(true)

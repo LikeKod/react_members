@@ -24,6 +24,8 @@ const columns = [
 export default function AssetsTable() {
   const { assets } = useCrypto();
 
+  console.log('Assets - crypto', assets)
+
   const data = assets.map((a) => ({
     key: a.id,
     name: a.name,
