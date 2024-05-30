@@ -1,10 +1,13 @@
 import { AppEntryPoint } from "../pages";
+import { AppQueryProvider } from "./provider/QueryProvider";
 import { AppThemeProvider } from "./provider/ThemeProvider";
 
 function App() {
   return (
     <AppThemeProvider>
-      <AppEntryPoint />
+      <AppQueryProvider>
+        <AppEntryPoint />
+      </AppQueryProvider>
     </AppThemeProvider>
   );
 }
