@@ -14,7 +14,7 @@ export const CurrencySelector = ({ currencyList, label, register }) => {
       id={id}
       select
       label={label}
-      sx={{ width: "150px" }}
+      sx={{ width: "100%" }}
       required
       defaultValue={currencyList[0].value}
     >
