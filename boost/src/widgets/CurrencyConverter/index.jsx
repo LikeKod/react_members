@@ -38,6 +38,7 @@ export const CurrencyConverter = () => {
         <ConvertForm
           currencyList={mapCurrencyRateToLabelValue(data)}
           onSubmit={onSubmit}
+          buttonLabel='Convert'
         />
       </Box>
       <Box sx={{ padding: "16px", minHeight: '64px' }}>
