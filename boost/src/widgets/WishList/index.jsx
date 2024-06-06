@@ -6,7 +6,9 @@ import {
   Typography
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useWishListState } from "../../enteties/wish";
+import { WishListCard } from "../../enteties/wish/ui/WishList";
 import { ConvertForm } from "../../feature/ConvertForm";
 import { currencyService } from "../../shared/api";
 import { ModalBase } from "../../shared/ui/ModalBase";
@@ -18,38 +20,41 @@ export const WishList = () => {
 
   const { error, setError, setValue, value } = useInputState();
 
+  const { wishList, saveItem } = useWishListState();
+
   const { isLoading, data: currancyRate } = useQuery({
     queryKey: ["currencyRate"],
     queryFn: currencyService.getCurrency,
     select: (data) => data.data,
   });
 
-  const onSubmit = (data) => {
-    if (!value) {
-      return setError(true);
-    }
-
-    const result = converterResult(
-      data.countCurrency,
-      currancyRate[data.from],
-      currancyRate[data.to]
-    );
-  };
+  const onSubmit = useCallback(
+    (data) => {
+      if (!value) {
+        return setError(true);
+      }
+      saveItem({
+        ...data,
+        wishName: value,
+      });
+      return setIsOpen(false);
+    },
+    [saveItem, setError, value]
+  );
 
   const onAddWhishClick = () => {
     setIsOpen(true);
   };
 
   const onValueChange = (e) => {
+    const targetValue = e.target.value;
 
-    const targetValue = e.target.value
-
-    if(targetValue) {
-      setError(false)
+    if (targetValue) {
+      setError(false);
     }
 
-    return setValue(e.target.value)
-  }
+    return setValue(e.target.value);
+  };
 
   if (isLoading) {
     return <CircularProgress />;
@@ -61,6 +66,9 @@ export const WishList = () => {
       <Button variant="outlined" color="primary" onClick={onAddWhishClick}>
         Add whish
       </Button>
+      <Box padding="16px">
+        <WishListCard currancyRate={currancyRate} items={wishList} />
+      </Box>
       <ModalBase
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
