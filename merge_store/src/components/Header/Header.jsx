@@ -39,7 +39,7 @@ const Header = () => {
             />
           </div>
 
-          <div className={styles.box}></div>
+          {false && <div className={styles.box}></div>}
         </form>
 
         <div className={styles.account}>

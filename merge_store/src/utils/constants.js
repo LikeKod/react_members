@@ -1,0 +1,1 @@
+export const BASE_URL = 'gttps://api.escuelajs.co/api/v1';
