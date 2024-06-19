@@ -1,7 +1,28 @@
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { addItemToCart } from "../../features/user/userSlice";
 import styles from "../../styles/Product.module.css";
+import { ROUTES } from "../../utils/route";
 
-const Product = ({ images, title, price }) => {
-  const currentImage = images[0];
+const SIZES = [4, 4.5, 5];
+
+const Product = (item) => {
+  const { images, title, price, description } = item;
+
+  const dispatch = useDispatch();
+
+  const [currentImage, setCurrentImage] = useState();
+  const [currentSize, setCurrentSize] = useState();
+
+  useEffect(() => {
+    if (!images.length) return;
+    setCurrentImage(images[0]);
+  }, [images]);
+
+  const addToCart = () => {
+    dispatch(addItemToCart(item));
+  };
 
   return (
     <section className={styles.product}>
@@ -10,27 +31,57 @@ const Product = ({ images, title, price }) => {
           className={styles.current}
           style={{ backgroundImage: `url(${currentImage})` }}
         />
-        {images.map((image, i) => (
-          <div
-            key={i}
-            className={styles.image}
-            style={{ backgroundImage: `url(${image})` }}
-            onClick={() => {}}
-          />
-        ))}
+        \
+        <div className={styles["images-list"]}>
+          {images.map((image, i) => (
+            <div
+              key={i}
+              className={styles.image}
+              style={{ backgroundImage: `url(${image})` }}
+              onClick={() => setCurrentImage(image)}
+            />
+          ))}
+        </div>
       </div>
       <div className={styles.info}>
         <h1 className={styles.title}>{title}</h1>
-        <div className={styles.price}>{price}</div>
+        <div className={styles.price}>{price}$</div>
         <div className={styles.color}>
-            <span>Color:</span>White
+          <span>Color:</span>White
         </div>
         <div className={styles.sizes}>
-            <span>Sizes:</span>
+          <span>Sizes:</span>
 
-            <div className={styles.list}>
+          <div className={styles.list}>
+            {SIZES.map((size) => (
+              <div
+                onClick={() => setCurrentSize(size)}
+                key={size}
+                className={`${styles.size} ${
+                  currentSize === size ? styles.active : ""
+                }`}
+              >
+                {size}
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className={styles.description}>{description}</p>
 
-            </div>
+        <div className={styles.actions}>
+          <button
+            onClick={addToCart}
+            className={styles.add}
+            disabled={!currentSize}
+          >
+            Add to cart
+          </button>
+          <button className={styles.favorite}>Add to favorite</button>
+        </div>
+
+        <div className={styles.bottom}>
+          <div className={styles.purchase}>Lorem ipsum dolor sit.</div>
+          <Link to={ROUTES.Home}>To store</Link>
         </div>
       </div>
     </section>

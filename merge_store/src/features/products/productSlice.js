@@ -3,6 +3,7 @@ import {
     createSlice
 } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { suffle } from '../../utils/common';
 import {
     BASE_URL
 } from '../../utils/constants';
@@ -32,7 +33,13 @@ const productsSlice = createSlice({
             state.filtered = state.list.filter(({
                 price
             }) => price < payload)
-        }
+        },
+        getRelatedProducts: (state, {
+            payload
+        }) => {
+            const list = state.list.filter(({category: {id}}) => id === payload)
+            state.related = suffle(list)
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(getProducts.fulfilled, (state) => {
@@ -51,7 +58,7 @@ const productsSlice = createSlice({
 })
 
 export const {
-    filterByPrice
+    filterByPrice, getRelatedProducts
 } = productsSlice.actions;
 
 export default productsSlice.reducer;
