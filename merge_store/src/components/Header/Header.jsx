@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toggleForm } from "../../features/user/userSlice";
 import AVATAR from "../../images/avatar.jpg";
 import LOGO from "../../images/logo.svg";
@@ -8,11 +9,26 @@ import { ROUTES } from "../../utils/route";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { currentUser } = useSelector(({ user }) => user);
 
+  const [values, setValues] = useState({ name: "Guest", avatar: AVATAR });
+  const [searchValue, setSearchValue] = useState("");
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    setValues(currentUser);
+  }, [currentUser]);
+
   const handleClick = () => {
     if (!currentUser) dispatch(toggleForm(true));
+    else navigate(ROUTES.PROFILE);
+  };
+
+  const handleSearch = ({ target: { value } }) => {
+    setSearchValue(value);
   };
 
   return (
@@ -27,9 +43,9 @@ const Header = () => {
         <div className={styles.user} onClick={handleClick}>
           <div
             className={styles.avatar}
-            style={{ backgroundImage: `url(${AVATAR})` }}
+            style={{ backgroundImage: `url(${values.avatar})` }}
           />
-          <div className={styles.username}>Guest</div>
+          <div className={styles.username}>{values.name}</div>
         </div>
 
         <form className={styles.form}>
@@ -44,8 +60,8 @@ const Header = () => {
               name="search"
               placeholder="Got shopping!"
               autoComplete="off"
-              onChange={() => {}}
-              value=""
+              onChange={searchValue}
+              value={searchValue}
             />
           </div>
 
