@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 import { toggleForm } from "../../features/user/userSlice";
 import AVATAR from "../../images/avatar.jpg";
 import LOGO from "../../images/logo.svg";
@@ -15,6 +16,8 @@ const Header = () => {
 
   const [values, setValues] = useState({ name: "Guest", avatar: AVATAR });
   const [searchValue, setSearchValue] = useState("");
+
+  const { data, isLoading } = useGetProductsQuery({ title: searchValue });
 
   useEffect(() => {
     if (!currentUser) return;
@@ -65,7 +68,30 @@ const Header = () => {
             />
           </div>
 
-          {false && <div className={styles.box}></div>}
+          {searchValue && (
+            <div className={styles.box}>
+              {isLoading
+                ? "Loading"
+                : !data.length
+                ? "No results"
+                : data.map(({ title, images, id }) => {
+                    return (
+                      <Link
+                        key={id}
+                        className={styles.item}
+                        onClick={() => setSearchValue("")}
+                        to={`/products/${id}`}
+                      >
+                        <div
+                          className={styles.image}
+                          style={{ backgroundImage: `url(${images[0]})` }}
+                        />
+                        <div className={styles.title}>{title}</div>
+                      </Link>
+                    );
+                  })}
+            </div>
+          )}
         </form>
 
         <div className={styles.account}>
