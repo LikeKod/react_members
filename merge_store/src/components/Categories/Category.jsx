@@ -6,6 +6,8 @@ import styles from "../../styles/Category.module.css";
 import Products from "../Products/Products";
 
 const Category = () => {
+  const { data, isLoading, isSuccess } = useGetProductQuery(params);
+
   const { id } = useParams();
 
   const { list } = useSelector(({ categories }) => categories);
@@ -17,29 +19,47 @@ const Category = () => {
   };
 
   const defaultParams = {
+    limit: 5,
+    offset: 0,
     categoryId: id,
     ...defaultValues,
   };
 
-  const [cat, setCat] = useState("");
+  const [isEnd, setIsEnd] = useState(false);
+  const [cat, setCat] = useState(null);
+  const [items, setItems] = useState([]);
   const [params, setParams] = useState(defaultParams);
   const [values, setValues] = useState(defaultValues);
 
   useEffect(() => {
     if (!id) return;
 
+    setItems([]);
+    setValues(defaultValues);
+    setIsEnd(false);
+
     setParams({ ...defaultParams, categoryId: id });
   }, [id]);
 
   useEffect(() => {
+    if (!isLoading) return;
+
+    if (!items.length) return setIsEnd(true);
+
+    const products = Object.values(data);
+
+    if (!products.length) return;
+
+    setItems((_items) => [..._items, ...products]);
+  }, [data, isLoading]);
+
+  useEffect(() => {
     if (!id || !list.length) return;
 
-    const { name } = list.find((item) => item.id === id * 1);
+    const category = list.find((item) => item.id === id * 1);
 
-    setCat(name);
+    setCat(category);
   }, [list, id]);
-
-  const { data, isLoading, isSuccess } = useGetProductQuery(params);
 
   const handleChange = ({ target: { value, name } }) => {
     setValues({ ...values, [name]: value });
@@ -48,12 +68,16 @@ const Category = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setParams({ ...params, ...values });
+    setItems([]);
+
+    setIsEnd(false);
+
+    setParams({ ...defaultParams, ...values });
   };
 
   return (
     <section className={styles.wrapper}>
-      <h2 className={styles.title}>{cat}</h2>
+      <h2 className={styles.title}>{cat?.name}</h2>
 
       <form className={styles.filters} onSubmit={handleSubmit}>
         <div className={styles.filter}>
@@ -73,6 +97,7 @@ const Category = () => {
             placeholder="0"
             value={values.price_min}
           />
+          <span>Price from</span>
         </div>
         <div className={styles.filter}>
           <input
@@ -82,6 +107,7 @@ const Category = () => {
             placeholder="0"
             value={values.price_max}
           />
+          <span>Price to</span>
         </div>
         <button type="submit" hidden />
       </form>
@@ -95,10 +121,21 @@ const Category = () => {
       ) : (
         <Products
           title=""
-          products={data}
+          products={items}
           style={{ padding: 0 }}
-          amount={data.length}
+          amount={items.length}
         />
+      )}
+      {!isEnd && (
+        <div className={styles.more}>
+          <button
+            onClick={() =>
+              setParams({ ...params, offset: params.offset + params.limit })
+            }
+          >
+            See more
+          </button>
+        </div>
       )}
     </section>
   );
