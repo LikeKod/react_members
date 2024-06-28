@@ -75,6 +75,12 @@ const Category = () => {
     setParams({ ...defaultParams, ...values });
   };
 
+  const handleReset = () => {
+    setValues(defaultValues);
+    setParams(defaultParams);
+    setIsEnd(false);
+  };
+
   return (
     <section className={styles.wrapper}>
       <h2 className={styles.title}>{cat?.name}</h2>
@@ -116,7 +122,7 @@ const Category = () => {
       ) : !isSuccess || !data.length ? (
         <div className={styles.back}>
           <span>No results</span>
-          <button>Reset</button>
+          <button onClick={handleReset}>Reset</button>
         </div>
       ) : (
         <Products
